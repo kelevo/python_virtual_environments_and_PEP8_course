@@ -35,3 +35,33 @@ def process__article_data(raw_data):
     pass
 
 
+def news_api_client(api_key, query, timeout = 30, retries = 4):
+    return f"NewsAPI: {query} con timeout {timeout}"
+
+
+def guardian_client(api_key, section, from_date, timeout = 30, retries = 4):
+    return f"Guardian {section} desde {from_date} con timeout {timeout}"
+
+
+def ejemplo_args(api_key, *args):
+    print(f"API KEY: {api_key}")
+    print(f"Todos los args {args}")
+    print(f"{type(args)}")
+
+
+def add_all_numbers(*args):
+    total = sum(
+        arg
+        for arg in args
+        if isinstance(arg, (int, float))
+    )
+
+    print(f"La suma total de los argumentos es: {total}")
+
+ejemplo_args("API_KEY_VALUE", "Este", "parametro", "aca")
+ejemplo_args("API_KEY_VALUE", "Hola", "mundo")
+
+print()
+
+add_all_numbers(1, 2, 3, 4, 5, 6, 7, 8, 9, 0)
+
