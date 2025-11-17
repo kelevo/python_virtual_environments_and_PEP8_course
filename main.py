@@ -1,4 +1,6 @@
-# main.py - Todo el codigo en un solo archivo
+import urllib.request
+import urllib.parse
+import json
 
 """
 Sistema de analisis de noticias con APIs multiples
@@ -7,7 +9,9 @@ Sistema de analisis de noticias con APIs multiples
 # PEP 8: Configuracion centralizada - constantes en MAYUSCULAS con guiones bajos
 API_TIMEOUT = 30
 MAX_RETRIES = 3
-DEFAULT_LANGUAGE = 'es' # PEP 8: Comillas dobles para strings 
+DEFAULT_LANGUAGE = "es" # PEP 8: Comillas dobles para strings 
+API_KEY = "9b2fdaebec964dc6b24a516d32f79070"
+BASE_URL = "https://newsapi.org/v2/everything"
 
 # PEP 8: Utilidades comunes del proyecto - funciones en snake_case
 def clean_text(text):
@@ -35,10 +39,6 @@ def process__article_data(raw_data):
     pass
 
 
-def news_api_client(api_key, query, timeout = 30, retries = 4):
-    return f"NewsAPI: {query} con timeout {timeout}"
-
-
 def guardian_client(api_key, section, from_date, timeout = 30, retries = 4):
     return f"Guardian {section} desde {from_date} con timeout {timeout}"
 
@@ -58,12 +58,12 @@ def add_all_numbers(*args):
 
     print(f"La suma total de los argumentos es: {total}")
 
-ejemplo_args("API_KEY_VALUE", "Este", "parametro", "aca")
-ejemplo_args("API_KEY_VALUE", "Hola", "mundo")
+# ejemplo_args("API_KEY_VALUE", "Este", "parametro", "aca")
+# ejemplo_args("API_KEY_VALUE", "Hola", "mundo")
 
-print()
+# print()
 
-add_all_numbers(1, 2, 3, 4, 5, 6, 7, 8, 9, 0)
+# add_all_numbers(1, 2, 3, 4, 5, 6, 7, 8, 9, 0)
 
 
 def ejemplo_kwargs(**kwargs):
@@ -71,7 +71,17 @@ def ejemplo_kwargs(**kwargs):
     print(f"{kwargs}")
     print("=========")
 
-ejemplo_kwargs(key="value", llave="valor")
+# ejemplo_kwargs(key="value", llave="valor")
+
+def news_api_client(api_key, query, timeout = 30, retries = 4):
+    query_string = urllib.parse.urlencode({"q": query, "apiKey": api_key})
+    url = f"{BASE_URL}?{query_string}"
+
+    with urllib.request.urlopen(url, timeout = timeout) as response:
+        data = response.read().decode("utf-8")
+        return json.loads(data)
+
+    return f"NewsAPI: {query} con timeout {timeout}"
 
 
 def fetch_news(api_name, *args, **kwargs):
@@ -96,3 +106,9 @@ def fetch_news(api_name, *args, **kwargs):
     
     client = api_clients[api_name]
     return client(*args, **config)
+
+
+
+response_data = fetch_news("newapi", api_key = API_KEY, query = "Python")
+for article in response_data["articles"]:
+    print(article["title"])
