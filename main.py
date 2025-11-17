@@ -65,3 +65,34 @@ print()
 
 add_all_numbers(1, 2, 3, 4, 5, 6, 7, 8, 9, 0)
 
+
+def ejemplo_kwargs(**kwargs):
+    print(f"kwargs: {type(kwargs)}")
+    print(f"{kwargs}")
+    print("=========")
+
+ejemplo_kwargs(key="value", llave="valor")
+
+
+def fetch_news(api_name, *args, **kwargs):
+    """
+        Funcion flexible para conectar con la API
+    """
+
+    base_config = {
+        "timeout": 30,
+        "retries": 4
+    }
+
+    config = {
+        **base_config,
+        **kwargs
+    }
+
+    api_clients = {
+        "newapi": news_api_client,
+        "guardian": guardian_client
+    }
+    
+    client = api_clients[api_name]
+    return client(*args, **config)
