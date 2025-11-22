@@ -77,9 +77,15 @@ def news_api_client(api_key, query, timeout = 30, retries = 4):
     query_string = urllib.parse.urlencode({"q": query, "apiKey": api_key})
     url = f"{BASE_URL}?{query_string}"
 
-    with urllib.request.urlopen(url, timeout = timeout) as response:
-        data = response.read().decode("utf-8")
-        return json.loads(data)
+    try:
+        with urllib.request.urlopen(url, timeout = timeout) as response:
+            data = response.read().decode("utf-8")
+            return json.loads(data)
+    except urllib.error.HTTPError:
+        print("EL API Key es invalida")
+        return {
+            "articles": []
+        }
 
     return f"NewsAPI: {query} con timeout {timeout}"
 

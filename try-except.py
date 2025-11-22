@@ -10,3 +10,5 @@ except ValueError:
     print("El valor ingresado no es un numero")
 except ZeroDivisionError:
     print("No esta permitido dividir por 0")
+finally:
+    print("Fin del programa")
